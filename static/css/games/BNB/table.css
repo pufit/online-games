@@ -1,0 +1,39 @@
+.card_2{
+    height: 313px;
+    width: 223.5px;
+    background: url("../../../img/games/BNB/cards.jpg") 0 0 no-repeat;
+    border: 1px solid black;
+    z-index: 2;
+}
+.card_3{
+    height: 313px;
+    width: 223.5px;
+    background: url("../../../img/games/BNB/cards.jpg") -2458.5px -939px no-repeat;
+    border: 1px solid black;
+}
+.card_back{
+    height: 313px;
+    width: 223.5px;
+    background: url("../../../img/games/BNB/cards.jpg") 0 -1252px no-repeat;
+    transform: rotateY(180deg);
+}
+
+.flip-container {
+    perspective: 1000px;
+    height: 313px;
+    width: 223.5px;
+}
+.flip-container:hover .flipper, .flip-container.hover .flipper {
+    transform: rotateY(180deg);
+}
+.flipper {
+    transition: 0.6s;
+    transform-style: preserve-3d;
+    position: relative;
+}
+.card_2, .card_back {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
