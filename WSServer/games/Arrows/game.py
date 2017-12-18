@@ -14,6 +14,23 @@ class Player:
         self.life = Life(PLAYERS_LIFE, player_id, user)
 
 
+class Bullet:
+    def __init__(self, x, y, direction, field):
+        self.field = field
+
+        self.x, self.y = x, y
+        self.direction = direction
+        self.speed_x, self.speed_y = 0, 0
+        if self.direction == 2:
+            self.speed_x = -1
+        elif self.direction == 1:
+            self.speed_y = -1
+        elif self.direction == 0:
+            self.speed_x = 1
+        elif self.direction == -1:
+            self.speed_y = 1
+
+
 class Life:
     def __init__(self, life, player_id, user):
         self.max_life = PLAYERS_LIFE
@@ -23,6 +40,21 @@ class Life:
 
     def damage(self):
         self.life -= 1
+
+
+class Field:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+        self.players = {}
+        self.bullets = []
+
+    def add_player(self, player):
+        self.players[player.id] = player
+
+    def player_shoot(self, player):
+        self.bullets.append(Bullet(player.x, player.y, player.direction, self))
 
 
 class Game:
@@ -36,24 +68,20 @@ class Game:
         self.creator = creator
         self.channel = channel
 
-        self.players = {}
-        self.bullets = {}
+        self.field = Field(settings['width'], settings['height'])
 
-        self.field_width = settings['width']
-        self.field_height = settings['height']
-
-        if (self.field_height > MAX_FIELD_SIZE) or (self.field_height > MAX_FIELD_SIZE):
+        if (self.field > MAX_FIELD_SIZE) or (self.field > MAX_FIELD_SIZE):
             raise Exception('Field too large')
 
         self.started = False
         self.last_player_id = -1
 
     def add_new_player(self, user):
-        if len(self.players) >= self.slots:
+        if len(self.field.players) >= self.slots:
             raise Exception('Players limit')
         self.last_player_id += 1
         player = Player(0, 0, self.last_player_id, user)
-        self.players[self.last_player_id] = player
+        self.field.add_player(player)
         return player
 
     def start_game(self):
