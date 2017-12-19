@@ -19,8 +19,9 @@ class Channel:
             'data': handler.get_information()
         })
 
-    def send(self, data):
-        logger.info('%s Ответ %s  %s' % (self.name, data['type'], data['data']))
+    def send(self, data, log=True):
+        if log:
+            logger.info('%s Ответ %s  %s' % (self.name, data['type'], data['data']))
         for handler in self.handlers:
             try:
                 handler.ws_send(json.dumps(data))

@@ -208,6 +208,8 @@ def join(self, data):
         raise Exception('This game dose not exist')
     if self.temp.games[data].started:
         raise Exception('Game already started')
+    if self.game:
+        leave(self, None)
     self.game = self.temp.games[data]
     self.me = self.game.add_new_player(self)
     resp = {
@@ -267,6 +269,7 @@ def leave(self, data):
     self.game.leave(self.me.id)
     if len(self.game.players) == 0:
         self.temp.games.pop(self.game.name)
+        self.game.stop = True
         if not self.game.started:
             self.temp.main_channel.send({
                 'type': 'game_deleted',

@@ -5,8 +5,12 @@ from Extinguisher.game import Game as Ext
 import Extinguisher.actions
 
 
+from Arrows.game import Game as Arr
+import Arrows.actions
+
+
 game_types = {
         'BNB': (Bnb, BNB.actions),
         'Ext': (Ext, Extinguisher.actions),
-        'Arr': tuple()
+        'Arr': (Arr, Arrows.actions)
     }
