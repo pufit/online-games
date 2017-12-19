@@ -2,8 +2,11 @@ from random import choice
 from .config import *
 
 
-class Player():
-    def __init__(self, player_id):
+class Player:
+    def __init__(self, player_id, user):
+        self.user = user
+        self.name = user.user
+
         self.id = player_id
         self.money = 10000
         self.materials = 4
@@ -43,7 +46,7 @@ class Factory:
 
 
 class Game:
-    def __init__(self, name, channel, creator, slots=MAX_PLAYERS):
+    def __init__(self, name, channel, creator, slots, _):
         
         self.MAX_PLAYERS = MAX_PLAYERS
         self.type = 'Man'
@@ -97,12 +100,12 @@ class Game:
             all_info[key] = info
         return all_info
 
-    def add_new_player(self):
-        if self.slots >= self.playersAlive:
+    def add_new_player(self, user):
+        if self.playersAlive >= self.slots:
             raise Exception('Players limit')
         self.lastPlayerId += 1
         self.playersAlive += 1
-        player = Player(str(self.lastPlayerId))
+        player = Player(str(self.lastPlayerId), user)
         self.players[str(self.lastPlayerId)] = player
         self.factories[str(self.lastPlayerId)] = []
         return player
@@ -254,4 +257,5 @@ class Game:
                 self.buildingFactories[owner].append(Factory(owner))
             self.players[owner].money -= 2500 * request[1]
 
-        ##
+    def leave(self, player_id):
+        self.killPlayer(player_id)

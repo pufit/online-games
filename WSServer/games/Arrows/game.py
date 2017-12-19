@@ -192,6 +192,7 @@ class Game:
         Начинаем игру
         :return: None
         """
+        self.started = True
         self.field.restart()
         while (not self.field.win) and (not self.stop):
             self.tick()

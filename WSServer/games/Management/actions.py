@@ -1,10 +1,27 @@
 
+def check_turn(func):
+    def wrapper(self, data):
+        if (self.game is not None) and (self.me.turn is not False) and (self.me.isDead is not True):
+            return func(self, data)
+        else:
+            return {'type': 'failed', 'data': 'Not enough rights, or your turn ended'}
+    return wrapper
 
+
+@check_turn
 def end_turn(self, data):
-    self.turn = False
     end_round = self.game.playerEndTurn()
     if end_round:
         __end_round(self)
+
+
+def get_information(self, data):
+    players = self.game.getPlayersInfo()
+    resp = {
+        'type': 'information',
+        'data': players
+    }
+    return resp
 
 
 def __end_round(self):
@@ -14,21 +31,33 @@ def __end_round(self):
         self.game.channel.send(data)
     data = {'type': 'new_round_started', 'data': ''}
     self.game.channel.send(data)
-    for handler in self.game.handlers:
-        handler.turn = True
 
 
+@check_turn
 def sell_products(self, data):
     self.game.newRequestMaterial(self.me.id, data['count'], data['price'])
+    return {'type': 'OK', 'data': ''}
 
 
+@check_turn
 def produce_products(self, data):
     self.game.newRequestProduce(self.me.id, data['count'])
+    return {'type': 'OK', 'data': ''}
 
 
+@check_turn
 def buy_materials(self, data):
     self.game.newRequestMaterial(self.me.id, data['count'], data['price'])
+    return {'type': 'OK', 'data': ''}
 
 
+@check_turn
+def sell_products(self, data):
+    self.game.newRequestProduct(self.me.id, data['count'], data['price'])
+    return {'type': 'OK', 'data': ''}
+
+
+@check_turn
 def buy_factory(self, data):
     self.game.newRequestFactory(self.me.id, 1)
+    return {'type': 'OK', 'data': ''}
