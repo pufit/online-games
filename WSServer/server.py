@@ -65,6 +65,9 @@ class Handler(WebSocketServerProtocol):
             data = 'Error'
         try:
             message_type = message_type.replace('__', '')
+
+            # TODO: off logger for some requests
+
             self.logger.info('%s Запрос %s  %s' % (self.addr, message_type, data))
             resp = commands.__getattribute__(message_type)(self, data)
         except Exception as ex:

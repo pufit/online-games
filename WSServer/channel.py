@@ -27,6 +27,24 @@ class Channel:
             except:
                 pass
 
+    def send_pm(self, data, users):
+        """
+        Send private message
+        :param data: data to send
+        :param users: list or str
+        :return: None
+        """
+        logger.info('%s Ответ пользователям %s: %s  %s' % (self.name, users, data['type'], data['data']))
+        if type(users) == list:
+            for handler in self.handlers:
+                if handler.user in users:
+                    handler.ws_send(json.dumps(data))
+        elif type(users) == str:
+            for handler in self.handlers:
+                if handler.user == users:
+                    handler.ws_send(json.dumps(data))
+                    break
+
     def leave(self, handler):
         if handler.typing:
             self.send({'type': 'user_stop_typing', 'data': {'user': handler.user, 'user_id': handler.user_id}})
