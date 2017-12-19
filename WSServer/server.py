@@ -1,5 +1,3 @@
-#!c:\Python34\python.exe
-# -*- coding: utf-8 -*-
 
 from autobahn.asyncio.websocket import WebSocketServerProtocol, \
     WebSocketServerFactory

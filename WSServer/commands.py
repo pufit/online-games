@@ -1,5 +1,7 @@
-#!c:\Python34\python.exe
-# -*- coding: utf-8 -*-
+
+
+"""Commands"""
+
 
 import json
 import time
@@ -23,6 +25,23 @@ def perms_check(user_rights):
 
 
 def __auth(self, user, session=None, auth_type='auth_ok'):
+    """
+    :param self: class Handler
+
+    :type user: str
+    :param user: user name
+
+    :type session: str, None
+    :param session: flask session
+
+    :type auth_type: str
+    :param auth_type: type of answer
+
+    :return: {
+        'type': auth_type,
+        'data': self.get_information()
+    }
+    """
     self.user = user
     self.user_id = self.temp.users[user]['user_id']
     self.user_rights = self.temp.users[user]['user_rights']
@@ -49,6 +68,18 @@ def __auth(self, user, session=None, auth_type='auth_ok'):
 
 @perms_check(0)
 def auth(self, data):
+    """
+    :param self: class Handler
+    :param data: {
+        'user': str
+        'password': str
+    }
+
+    :raise: You are already logged in
+            Wrong login or password
+
+    :return: __auth(self, data['user'])
+    """
     if self.user:
         raise Exception('You are already logged in')
     if (data['user'] in self.temp.users) and (self.temp.users[data['user']]['password'] == data['password']):
@@ -58,6 +89,14 @@ def auth(self, data):
 
 @perms_check(0)
 def session_auth(self, data):
+    """
+    :param self: class Handler
+    :param data: {
+        'session': str (flask session)
+    }
+
+    :return: __auth(self, user, data['session'])
+    """
     session = sessions.decode_flask_cookie(self.secret_key, data['session'])
     user = session['user']
     return __auth(self, user, data['session'])
@@ -65,6 +104,17 @@ def session_auth(self, data):
 
 @perms_check(0)
 def reg(self, data):
+    """
+    :param self: class Handler
+    :param data: {
+        'user': str,
+        'password: str
+    }
+
+    :raise: This login is already in use
+
+    :return: __auth(self, data['user'], auth_type='reg_ok')
+    """
     if data["user"] not in self.temp.users:
         user_id = [self.temp.users[i]['user_id'] for i in self.temp.users]
         self.user_id = max(user_id) + 1
@@ -77,11 +127,17 @@ def reg(self, data):
         }
         self.temp.db_save(USERS, self.temp.users)
         return __auth(self, data['user'], auth_type='reg_ok')
-    raise Exception('This login is already in use!')
+    raise Exception('This login is already in use')
 
 
 @perms_check(0)
 def games_list(self, data):
+    """
+    :param self: class Handler
+    :param data: None
+
+    :return: list
+    """
     lst = [{
         'name': self.temp.games[i].name,
         'creator': self.temp.games[i].creator,
@@ -94,6 +150,22 @@ def games_list(self, data):
 
 @perms_check(1)
 def create_game(self, data):
+    """
+    :param self: class Handler
+    :param data: {
+        'name': str,
+        'type': str, (see games.__init__.py)
+        'slots': int,
+        'settings': dict or None (additional settings of the game)
+    }
+
+    :raise: This game already exist
+            Bad slots
+            Bad name
+            game.__init__ exceptions
+
+    :return: dict
+    """
     game = games.game_types[data['type']][0](data['name'],
                                              Channel(data['name']),
                                              self.user, data['slots'],
@@ -116,15 +188,26 @@ def create_game(self, data):
         }
     }
     self.temp.main_channel.send(resp)
-    return {'type': 'create_game_ok', 'data': ''}
+    return {'type': 'create_game_ok', 'data': None}
 
 
 @perms_check(1)
 def join(self, data):
+    """
+    :param self: class Handler
+
+    :type data: str
+    :param data: name of the game
+
+    :raise: This game dose not exist
+            Game already started
+
+    :return: dict
+    """
     if not self.temp.games.get(data):
         raise Exception('This game dose not exist')
     if self.temp.games[data].started:
-        raise Exception('Game already started!')
+        raise Exception('Game already started')
     self.game = self.temp.games[data]
     self.me = self.game.add_new_player(self)
     resp = {
@@ -222,6 +305,13 @@ def stop_typing(self, data):
 
 @perms_check(0)
 def send_message(self, data):
+    """
+    :param self: class Handler
+    :param data: {
+        'text': str
+    }
+    :return: dict
+    """
     resp = {
         'type': 'message',
         'data': {
@@ -259,11 +349,22 @@ def get_channel(self, data):
 
 @perms_check(0)
 def ping(self, data):
+    """
+    :param self: None
+    :param data: send time or None
+    :return: dict
+    """
     if not data:
         return {'type': 'pong', 'data': 'Pong!'}
     return {'type': 'pong', 'data': time.time() - data}
 
 
 def error(self, data):
+    """
+    System method
+    :param self: None
+    :param data: None
+    :return: dict
+    """
     return {'type': 'error', 'data': 'Bad request'}
 
