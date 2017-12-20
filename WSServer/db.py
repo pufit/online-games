@@ -7,6 +7,15 @@ import json
 
 
 class Db:
+    def __init__(self):
+        self.users = {}
+        self.db_update()
+
+        self.games = {}
+
+        self.handlers = []
+
+        self.main_channel = Channel('main')
     
     def db_update(self):
         with open(USERS, 'r', encoding='utf-8') as f:
@@ -25,9 +34,3 @@ class Db:
 
     with open(USERS, 'r', encoding='utf-8') as f:
         users = json.load(f)
-
-    games = {}
-
-    handlers = []
-
-    main_channel = Channel('main')

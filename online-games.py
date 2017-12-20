@@ -30,8 +30,8 @@ def auth():
     if request.method == 'POST':
         user = request.form.get('user')
         password = request.form.get('password')
-        if (user in server.Db.users) and (server.Db.users[user]['password'] == password):
-            inform = server.Db.users[user].get_information()
+        if (user in server.db.users) and (server.db.users[user]['password'] == password):
+            inform = server.db.users[user].get_information()
             for i in inform:
                 session[i] = inform[i]
             return redirect('')
@@ -49,19 +49,19 @@ def reg():
         user = request.form.get('user')
         password = request.form.get('password')
         repassword = request.form.get('repassword')
-        if (user not in server.Db.users) and (password == repassword):
-            user_id = max([server.Db.users[i]['user_id'] for i in server.Db.users]) + 1
+        if (user not in server.db.users) and (password == repassword):
+            user_id = max([server.db.users[i]['user_id'] for i in server.db.users]) + 1
             session['user'] = user
             session['user_id'] = user_id
             session['user_rights'] = 1
-            server.Db.users[session['user']] = {
+            server.db.users[session['user']] = {
                 'user': session['user'],
                 'password': session['password'],
                 'user_rights': 1,
                 'user_id': user_id,
                 'user_stat': {}
             }
-            server.Db.db_save(server.USERS, server.Db.users)
+            server.db.db_save(server.USERS, server.db.users)
             return redirect('')
         return render_template('pages/auth.html', error='Такой пользователь уже существует, или пароли не совпадают!')
     abort(418)
@@ -74,9 +74,9 @@ def debug():
 
 @app.route('/user/<user_id>')
 def user_data(user_id):
-    for user in server.Db.users:
-        if server.Db.users[user]['user_id'] == user_id:
-            user_rights = server.Db.users[user]['user_rights']
+    for user in server.db.users:
+        if server.db.users[user]['user_id'] == user_id:
+            user_rights = server.db.users[user]['user_rights']
             me = False
             if session.get('user') == user:
                 me = True

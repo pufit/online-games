@@ -14,11 +14,13 @@ import traceback
 
 VERSION = None
 
+db = Db()
+
 
 class Handler(WebSocketServerProtocol):
     def __init__(self):
         WebSocketServerProtocol.__init__(self)
-        self.temp = Db
+        self.temp = db
         self.user = None
         self.user_id = None
         self.user_stat = {}
