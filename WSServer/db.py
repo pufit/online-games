@@ -15,12 +15,12 @@ class Db:
     @staticmethod
     def db_save(name, value):
         with open(name, 'w', encoding='utf-8') as f:
-            json.dump(value, f, indent=4)
+            json.dump(value, f, indent=2)
         return True
 
     def db_save_all(self):
         with open(USERS, 'w', encoding='utf-8') as f:
-            json.dump(self.users, f, indent=4)
+            json.dump(self.users, f, indent=2)
         return True
 
     with open(USERS, 'r', encoding='utf-8') as f:

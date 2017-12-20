@@ -169,6 +169,8 @@ class Player:
         self.inventory = []
         self.cards_count = 2
 
+        self.n = 0
+
     def get_information(self):
         return {
             'id': self.id,
@@ -202,6 +204,8 @@ class Game:
         self.turn = None
         self.deck = []
         self.current_combination = None
+
+        self.score_table = {}
 
     def add_new_player(self, user):
         if len(self.players) >= self.slots:
@@ -284,18 +288,21 @@ class Game:
             result['took_id'] = self.turn
         self.deck = shuffled(self.deck + players_cards)
         self.current_combination = None
-        self.find_out_players()
+        win = self.find_out_players()
+        for player in self.players.values():
+            player.n += 1
         self._player_turn()
         self._give_out_cards()
-        return result
+        return result, win
 
     def find_out_players(self):
         players = self.players.copy()
         for player_id in players:
             player = self.players[player_id]
             if player.card_count == 8:
-                if len(self.players) == 2:
-                    return self.players[self.turn]
+                if len(self.players) == 1:
+                    return self.players[self.turn].name
+                self.score_table[player.name] = player.n
                 self.kill_player(player_id)
 
     def kill_player(self, player_id):

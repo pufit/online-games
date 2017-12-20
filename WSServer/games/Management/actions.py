@@ -1,21 +1,21 @@
 
 def check_turn(func):
     def wrapper(self, data):
-        if (self.game is not None) and (self.me.turn is not False) and (self.me.isDead is not True):
+        if (self.game is not None) and (self.me.turn is not False) and (not self.me.isDead):
             return func(self, data)
         else:
-            return {'type': 'failed', 'data': 'Not enough rights, or your turn ended'}
+            return {'type': 'failed', 'data': 'Your turn ended'}
     return wrapper
 
 
 @check_turn
-def end_turn(self, data):
+def end_turn(self, _):
     end_round = self.game.playerEndTurn()
     if end_round:
         __end_round(self)
 
 
-def get_information(self, data):
+def get_information(self, _):
     players = self.game.getPlayersInfo()
     resp = {
         'type': 'information',
@@ -27,7 +27,7 @@ def get_information(self, data):
 def __end_round(self):
     end = self.game.checkForGameEnd()
     if end:
-        data = {'type': 'game_over', 'data': end}
+        data = {'type': 'game_over', 'data': {player.name: player.n for player in self.game.players.values()}}
         self.game.channel.send(data)
     data = {'type': 'new_round_started', 'data': ''}
     self.game.channel.send(data)
@@ -58,6 +58,6 @@ def sell_products(self, data):
 
 
 @check_turn
-def buy_factory(self, data):
+def buy_factory(self, _):
     self.game.newRequestFactory(self.me.id, 1)
     return {'type': 'OK', 'data': ''}

@@ -53,20 +53,26 @@ def believe(self, data):
 
 @check_turn
 def not_believe(self, data):
+
+    # TODO: Win debug
+
     result, win = self.game.not_believe(data)
     result['turn'] = self.game.turn
+    resp = {
+        'type': 'round_ended',
+        'data': result
+    }
+    self.game.channel.send(resp)
     if win:
-        result['win'] = win
         resp = {
             'type': 'game_ended',
-            'data': result
+            'data': {
+                'score': self.game.score_table,
+                'win': win
+            }
         }
         user = self.temp.users[win]
         user.user_stat[user.game.type][0] += 1
         self.temp.db_save_all()
-    else:
-        resp = {
-            'type': 'round_ended',
-            'data': result
-        }
-    self.game.channel.send(resp)
+        self.game.channel.send(resp)
+

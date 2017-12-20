@@ -10,6 +10,7 @@ class Player:
         self.id = player_id
 
         self.inventory = []
+        self.n = 0
 
     def get_information(self):
         resp = {
@@ -76,6 +77,8 @@ class Game:
         self.deck = []
         self.current_cards = None
         self.last = False
+
+        self.score_table = {}
 
     def add_new_player(self, user):
         if len(self.players) >= self.slots:
@@ -180,6 +183,8 @@ class Game:
         self.current_cards = None
         self.last = False
         self._player_turn()
+        for player in self.players.values():
+            player.n += 1
         win = self.find_out_players()
         
         return result, win
@@ -190,7 +195,9 @@ class Game:
             player = self.players[player_id]
             if len(player.inventory) == 0:
                 if len(self.players) == 2:
-                    return self.players[self.turn]
+                    self.score_table[self.players[self.turn].name] += 1
+                    return True
+                self.score_table[player.name] = player.n
                 self.kill_player(player_id)
 
     def kill_player(self, player_id):

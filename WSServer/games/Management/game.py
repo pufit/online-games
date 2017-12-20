@@ -14,6 +14,7 @@ class Player:
         self.factories = 2
         self.isDead = False
         self.turn = False
+        self.n = 0
 
     def getInfo(self):
         return {'money': self.money,
@@ -195,7 +196,9 @@ class Game:
         self.updateGameLevel()
         self.thingToSell()
         for player_id in self.players:
-            self.players[player_id].turn = True
+            if not self.players[player_id].isDead:
+                self.players[player_id].turn = True
+                self.players[player_id].n += 1
 
     def produce(self):
         for key in self.requestsProduce.keys():
