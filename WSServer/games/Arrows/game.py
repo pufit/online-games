@@ -198,24 +198,17 @@ class Game:
             self.tick()
             time.sleep(TICK)
 
-        score_table = {player.name: player.score for player in self.field.players.values()}
-
         self.channel.send({
             'type': 'game_ended',
             'data': {
                 'win': self.field.win.name,
-                'score': score_table
+                'score': {player.name: player.score for player in self.field.players.values()}
             }
         })
 
-        win = min(score_table, key=lambda x: score_table[x])
-        for player_id in self.players:
-            player = self.players[player_id]
-            if player.name == win:
-                user = player.user
-                user.user_stat[self.type][0] += 1
-                user.temp.db_save_all()
-                break
+        user = self.field.win.user
+        user.user_stat[self.type][0] += 1
+        user.temp.db_save_all()
 
         _thread.exit()
 
