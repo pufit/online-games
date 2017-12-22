@@ -39,7 +39,7 @@ def __auth(self, user, session=None, auth_type='auth_ok'):
 
     :return: {
         'type': auth_type,
-        'data': self.get_information()
+        'data': self.get_information(), 'session': str
     }
     """
     self.user = user
@@ -156,7 +156,7 @@ def create_game(self, data):
         'name': str,
         'type': str, (see games.__init__.py)
         'slots': int,
-        'settings': dict or None (additional settings of the game)
+        ... additional settings of the game
     }
 
     :raise: This game already exist
@@ -166,10 +166,7 @@ def create_game(self, data):
 
     :return: dict
     """
-    game = games.game_types[data['type']][0](data['name'],
-                                             Channel(data['name']),
-                                             self.user, data['slots'],
-                                             data.get('settings'))
+    game = games.game_types[data['type']][0](Channel(data['name']), self.user, data)
     if self.temp.games.get(data['name']) is not None:
         raise Exception('This game already exist')
     if (data['slots'] > game.MAX_PLAYERS) or (data['slots'] < 2):
@@ -230,16 +227,16 @@ def join(self, data):
         'type': 'success_join',
         'data': {
             'id': self.me.id,
-            'players': [
-            ]
+            'players': {
+                self.game.players[player].name:
+                    {
+                    'id': player,
+                    'name': self.game.players[player].name,
+                    'player_information': self.game.players[player].user.get_information()
+                } for player in self.game.players
+            }
         }
     }
-    for player in self.game.players:
-        resp['data']['players'].append({
-            'id': player,
-            'name': self.game.players[player].name,
-            'player_information': self.game.players[player].user.get_information()
-        })
     return resp
 
 
@@ -329,25 +326,24 @@ def send_message(self, data):
 
 
 @perms_check(0)
-def get_channel(self, data):
+def get_channel_information(self, data):
     if self.channel:
-        users = []
+        users = {}
+        user_count = 0
         for handler in self.channel.handlers:
+            user_count += 1
             if handler.user:
-                users.append({
-                    'user': handler.user,
-                    'user_id': handler.user_id,
-                    'user_rights': handler.user_rights
-                })
+                users[handler.user] = handler.get_information()
         return {
             'type': 'channel',
             'data': {
                 'name': self.channel.name,
-                'users_count': len(self.channel.handlers),
+                'users_count': user_count,
+                'unauthorized_count': user_count - len(self.channel.handlers),
                 'users': users
             }
         }
-    return {'type': 'channel', 'data': ''}
+    return {'type': 'channel_information', 'data': ''}
 
 
 @perms_check(0)

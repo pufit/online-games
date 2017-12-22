@@ -141,7 +141,10 @@ class Field:
         Перезапускает игру
         :return: None
         """
-        self.bullets = {}
+
+        # TODO: Ошибка после первой смерти
+
+        self.bullets = []
         self.alive_players_count = len(self.players)
 
         for player in self.players.values():
@@ -152,19 +155,28 @@ class Field:
 
 
 class Game:
-    def __init__(self, name, channel, creator, slots, settings):
+    def __init__(self, channel, creator, config):
+        """
+        :param channel: class Channel
+        :param config: dict
 
+        Additional settings:
+            width: int
+            height: int
+            max_score: int
+        """
+        self.config = config
         self.MAX_PLAYERS = MAX_PLAYERS
         self.type = 'Arr'
 
-        self.name = name
-        self.slots = slots
+        self.name = config['name']
+        self.slots = config['slots']
         self.creator = creator
         self.channel = channel
 
         self.stop = False
 
-        self.field = Field(settings['width'], settings['height'], settings['max_score'])
+        self.field = Field(config['width'], config['height'], config['max_score'])
 
         self.players = self.field.players
 

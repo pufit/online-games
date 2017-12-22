@@ -55,13 +55,13 @@ class Player:
 
 
 class Game:
-    def __init__(self, name, channel, creator, slots, _):
-
+    def __init__(self, channel, creator, config):
+        self.config = config
         self.MAX_PLAYERS = MAX_PLAYERS
         self.type = 'BNB'
 
-        self.name = name
-        self.slots = slots
+        self.name = config['name']
+        self.slots = config['slots']
         self.creator = creator
         self.players = {}
         self.channel = channel

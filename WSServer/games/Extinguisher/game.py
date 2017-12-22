@@ -187,17 +187,17 @@ class Player:
 
 
 class Game:
-    def __init__(self, name, channel, creator, slots, _):
-
+    def __init__(self, channel, creator, config):
+        self.config = config
         self.MAX_PLAYERS = MAX_PLAYERS
         self.type = 'Ext'
 
-        self.name = name
+        self.name = config['name']
         self.creator = creator
-        self.slots = slots
-        self.last_player_id = -1
+        self.slots = config['slots']
         self.channel = channel
 
+        self.last_player_id = -1
         self.started = False
 
         self.players = {}

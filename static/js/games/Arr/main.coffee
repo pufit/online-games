@@ -15,17 +15,6 @@ class Field
     @players = []
     @bullets = []
 
-  playerShoot: (player) ->
-    @bullets.push(new Bullet(player.x, player.y, player.direction, @))
-
-  addPlayer: (x, y, user) ->
-    ids = player.id for player in @players
-    id = if ids then Math.max.apply(0, a) else 0
-    @players.push(new Player(x, y, id, @, user))
-
-  removePlayer: (id) ->
-    @bullets.splice(id, 1)
-
   drawDots: ->
     for i in [0...fieldWidth]
       for j in [0...fieldHeight]
@@ -38,19 +27,24 @@ class Field
         @ctx.fillStyle = "rgb(#{@dotsColor})"
         @ctx.fill()
 
-  update: ->
-    for player in @players when player
-      @playerShoot(player) if player.shooting
-      player.update()
-      player.speed_x = 0
-      player.speed_y = 0
-      player.shooting = false
-    for bullet in @bullets when bullet
-      bullet.update()
-      for player in @players when player
-        player.life.damage() if (player.x == bullet.x) and (player.y == bullet.y)
+  addNewPlayer: (id, user) ->
+    @players.push(new Player(0, 0, id, @, user))
+
+  update: (players, bullets) ->
+    for player in players when player.life
+      up_player = @players[player.id]
+      for par of player
+        up_player[par] = player[par]
+    for bullet, i in bullets
+      @bullets[i].x = bullet.x
+      @bullets[i].y = bullet.y
+      @bullets[i].direction = bullet.direction
+    @draw()
 
   draw: ->
+
+    # TODO: Ошибка отрисовки
+
     @ctx.clearRect(0, 0, @canvasWidth, @canvasHeight)
     @ctx.globalAlpha = 1
     @drawDots()
@@ -59,21 +53,12 @@ class Field
       player.life.draw()
     bullet.draw() for bullet in @bullets
 
-  tick: ->
-    do @update
-    do @draw
-    setTimeout(@tick.bind(@), 1000/fps)
-
-  start: ->
-    do @tick
-
 
 class Player
   constructor: (@x, @y, @id, @field, @user) ->
     @life = new Life(10, @id, @field, @user)
 
     @direction = 0
-    @speed_x = @speed_y = 0
 
     @width = winFieldWidth // fieldWidth - 2
     @height = winFieldHeight // fieldHeight - 2
@@ -81,18 +66,8 @@ class Player
 
     [@real_x, @real_y] = cordToCord(@x, @y, 2)
 
-  update: ->
-    @x += @speed_x
-    @y += @speed_y
-
-    @x = 0 if @x >= @field.width
-    @x = @field.width - 1 if @x < 0
-    @y = 0 if @y >= @field.height
-    @y = @field.height - 1 if @y < 0
-
-    [@real_x, @real_y] = cordToCord(@x, @y, 2)
-
   draw: ->
+    [@real_x, @real_y] = cordToCord(@x, @y, 2)
     @field.ctx.rotate(@direction * 90 * Math.PI/180)
     @field.ctx.drawImage(playerImages[@id], @real_x, @real_y, @width, @height)
     @field.ctx.restore()
@@ -105,25 +80,8 @@ class Bullet
     @width = winFieldWidth // fieldWidth - 8
     @height = winFieldHeight // fieldHeight - 8
 
-    @speed_x = @speed_y = 0
-
-    @speed_x = -1 if @direction == 2
-    @speed_x = 1 if @direction == 0
-    @speed_y = -1 if @direction == 1
-    @speed_y = 1 if @direction == -1
-
-  update: ->
-    @x += @speed_x
-    @y += @speed_y
-
-    @x = 0 if @x >= @field.width
-    @x = @field.width - 1 if @x < 0
-    @y = 0 if @y >= @field.height
-    @y = @field.height - 1 if @y < 0
-
-    [@real_x, @real_y] = cordToCord(@x, @y, 2)
-
   draw: ->
+    [@real_x, @real_y] = cordToCord(@x, @y, 2)
     @field.ctx.rotate(@direction * 90 * Math.PI/180)
     @field.ctx.drawImage(bulletImage, @real_x, @real_y, @width, @height)
     @field.ctx.restore()
@@ -134,10 +92,42 @@ class Life
 
   draw: ->
 
-  damage: ->
+
+class ArrWS extends WSClient
+  auth_ok: (data) ->
+    super data
+    @send('join', 'test')
+
+  do_action: (data) ->
+    @send('action', {'action_type': 'do_action', 'direction': data})
+
+  success_join: (data) ->
+    super data
+    for player in Object.values(data.players)
+      field.addNewPlayer(player.id, player.player_information)
+    $(document).keydown (event) =>
+      if event.which == 37
+        @do_action('left')
+      if event.which == 39
+        @do_action('right')
+      if event.which == 38
+        @do_action('up')
+      if event.which == 40
+        @do_action('down')
+      if event.which == 32
+        @do_action('shoot')
+
+  new_player_connected: (data) ->
+    super data
+    field.addNewPlayer(data.id, data.player_information)
+
+  tick_passed: (data) ->
+    field.update(data.players, data.bullets)
 
 
-fps = 10
+
+
+
 winFieldWidth = 400
 winFieldHeight = 400
 winAdditionalWidth = 200
@@ -155,6 +145,5 @@ playerImages[1].src = 'static/img/games/Arr/player2.png'
 
 field = new Field(document.getElementById('canvas'), fieldWidth, fieldHeight)
 window.field = field
-window.Bullet = Bullet
-field.addPlayer(10, 10, '')
-do field.start
+
+window.ArrWS = ArrWS = new ArrWS()
