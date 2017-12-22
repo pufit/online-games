@@ -10,9 +10,13 @@ sys.path.append(os.getcwd() + '\\WSServer')
 
 
 app = Flask(__name__)
-app.secret_key = '81824be9f077eac410a9c3e0f28bc4e2'
 
-app.debug = True
+app.config.update(
+    SECRET_KEY='81824be9f077eac410a9c3e0f28bc4e2',
+    DEBUG=True,
+    SESSION_COOKIE_HTTPONLY=False
+)
+
 VERSION = '2.0b'
 
 
@@ -31,9 +35,10 @@ def auth():
         user = request.form.get('user')
         password = request.form.get('password')
         if (user in server.db.users) and (server.db.users[user]['password'] == password):
-            inform = server.db.users[user].get_information()
-            for i in inform:
-                session[i] = inform[i]
+            user = server.db.users[user]
+            session['user'] = user['user']
+            session['user_id'] = user['user_id']
+            session['user_rights'] = user['user_rights']
             return redirect('')
         return render_template('pages/auth.html', error='Неверный логин или пароль!')
     abort(418)
