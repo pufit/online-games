@@ -1,4 +1,7 @@
 
+# TODO: Life draw
+
+
 cordToCord = (x, y, k) ->
   return [x*winFieldWidth // fieldWidth + k, y * winFieldHeight // fieldHeight + k]
 
@@ -28,35 +31,31 @@ class Field
         @ctx.fill()
 
   addNewPlayer: (id, user) ->
-    @players.push(new Player(0, 0, id, @, user))
+    player = new Player(0, 0, id, @, user)
+    @players.push(player)
+    return player
 
   update: (players, bullets) ->
     for player in players when player.life
       up_player = @players[player.id]
       for par of player
         up_player[par] = player[par]
-    for bullet, i in bullets
-      @bullets[i].x = bullet.x
-      @bullets[i].y = bullet.y
-      @bullets[i].direction = bullet.direction
+    @bullets = []
+    for bullet in bullets
+      @bullets.push(new Bullet(bullet.x, bullet.y, bullet.direction, @))
     @draw()
 
   draw: ->
-
-    # TODO: Ошибка отрисовки
-
     @ctx.clearRect(0, 0, @canvasWidth, @canvasHeight)
     @ctx.globalAlpha = 1
     @drawDots()
-    for player in @players
-      player.draw()
-      player.life.draw()
+    player.draw() for player in @players
     bullet.draw() for bullet in @bullets
 
 
 class Player
   constructor: (@x, @y, @id, @field, @user) ->
-    @life = new Life(10, @id, @field, @user)
+    @life = 10
 
     @direction = 0
 
@@ -68,8 +67,10 @@ class Player
 
   draw: ->
     [@real_x, @real_y] = cordToCord(@x, @y, 2)
+    @field.ctx.save()
+    @field.ctx.translate(@real_x + @width / 2, @real_y + @height / 2)
     @field.ctx.rotate(@direction * 90 * Math.PI/180)
-    @field.ctx.drawImage(playerImages[@id], @real_x, @real_y, @width, @height)
+    @field.ctx.drawImage(playerImages[@id], -@width / 2, -@height / 2, @width, @height)
     @field.ctx.restore()
 
 
@@ -82,15 +83,12 @@ class Bullet
 
   draw: ->
     [@real_x, @real_y] = cordToCord(@x, @y, 2)
+    @field.ctx.save()
+    @field.ctx.translate(@real_x + @width / 2, @real_y + @height / 2)
     @field.ctx.rotate(@direction * 90 * Math.PI/180)
-    @field.ctx.drawImage(bulletImage, @real_x, @real_y, @width, @height)
+    @field.ctx.drawImage(bulletImage, -@width / 2, -@height / 2, @width, @height)
     @field.ctx.restore()
 
-
-class Life
-  constructor: (@life, @id, @field, @user) ->
-
-  draw: ->
 
 
 class ArrWS extends WSClient

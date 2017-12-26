@@ -77,14 +77,14 @@ class Handler(WebSocketServerProtocol):
         self.logger.info('%s Ответ  %s  %s' % (self.addr, resp['type'], resp['data']))
 
     def onClose(self, *args):
-        if self.channel:
-            self.channel.leave(self)
         try:
             commands.leave(self, None)
             self.temp.handlers.remove(self)
             self.channel.remove(self)
         except:
             pass
+        if self.channel:
+            self.channel.leave(self)
         self.logger.info('%s Отключился' % (self.addr,))
 
 

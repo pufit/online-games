@@ -31,6 +31,3 @@ class Db:
         with open(USERS, 'w', encoding='utf-8') as f:
             json.dump(self.users, f, indent=2)
         return True
-
-    with open(USERS, 'r', encoding='utf-8') as f:
-        users = json.load(f)

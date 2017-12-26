@@ -4,9 +4,6 @@ import time
 import _thread
 
 
-# TODO: Full debug
-
-
 class Player:
     def __init__(self, x, y, player_id, user, field):
         self.x, self.y = x, y
@@ -37,10 +34,10 @@ class Player:
             self.direction = 0
         elif act == 'up':
             self.speed_y = -1
-            self.direction = 1
+            self.direction = -1
         elif act == 'down':
             self.speed_y = 1
-            self.direction = -1
+            self.direction = 1
         elif act == 'shoot':
             self.shooting = True
 
@@ -66,11 +63,11 @@ class Bullet:
         self.speed_x, self.speed_y = 0, 0
         if self.direction == 2:
             self.speed_x = -1
-        elif self.direction == 1:
+        elif self.direction == -1:
             self.speed_y = -1
         elif self.direction == 0:
             self.speed_x = 1
-        elif self.direction == -1:
+        elif self.direction == 1:
             self.speed_y = 1
 
     def update(self):
@@ -132,7 +129,7 @@ class Field:
                         if self.alive_players_count == 1:
                             player.score += 1
                             if player.score == self.max_score:
-                                self.win = player
+                                self.win = min(self.players.values(), key=lambda x: x['score']).name
                             self.restart()
                             break
 
@@ -142,12 +139,11 @@ class Field:
         :return: None
         """
 
-        # TODO: Ошибка после первой смерти
-
         self.bullets = []
         self.alive_players_count = len(self.players)
 
         for player in self.players.values():
+            player.life = PLAYERS_LIFE
             player.x = randint(0, self.width - 1)
             player.y = randint(0, self.height - 1)
             player.direction = randint(-1, 2)
