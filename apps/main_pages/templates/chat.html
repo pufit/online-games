@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    {% block head %}
     <meta charset="UTF-8">
-    <title>Чат канала</title>
-    <link href="../../static/css/pages/chat.css" rel="stylesheet">
+    <link href="" rel="stylesheet">
+    <script>
+        var channel_id = {{ channel_id }};
+    </script>
+    {% endblock %}
 </head>
 <body>
 
-
+{% block chat %}
 <div class="chat-main">
     <div class="help-block">
     </div>
@@ -35,9 +39,11 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
-
-<script src="../../static/js/pages/chat.js"></script>
+{% block footer %}
+<script src=""></script>
+{% endblock %}
 
 </body>
 </html>

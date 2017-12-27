@@ -1,4 +1,3 @@
-from score_giver import give_score
 
 
 def check_turn(func):
@@ -73,6 +72,6 @@ def not_believe(self, data):
             }
         }
         user = self.temp.users[win]
-        give_score(user, self.game.type)
+        self.temp.give_score(user, self.game.type)
         self.game.channel.send(resp)
 

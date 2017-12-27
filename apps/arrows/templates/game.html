@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Игра Arrows {{ name }}</title>
+    <link href="{{ url_for('.static', filename='css/main.css') }}" rel="stylesheet">
+    <script src="{{ url_for('main_pages.static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('main_pages.static', filename='js/jquery.cookie.js') }}"></script>
+</head>
+<body>
+
+<canvas id="canvas">
+
+</canvas>
+
+<script src="{{ url_for('main_pages.static', filename='js/ws.js') }}"></script>
+<script src="{{ url_for('.static', filename='js/main.js') }}"></script>
+
+</body>
+</html>

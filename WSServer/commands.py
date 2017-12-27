@@ -10,7 +10,6 @@ import sessions
 import games
 from config import *
 from channel import Channel
-from score_giver import give_score as __score
 from _thread import start_new_thread as __start_new_thread
 
 
@@ -258,7 +257,7 @@ def leave(self, data):
     if not self.game:
         return None
     if self.game.started:
-        __score(self, self.game.type, -1)
+        self.temp.give_score(self, self.game.type, -1)
     else:
         self.temp.main_channel.send({
             'type': 'game_player_left',

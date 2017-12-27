@@ -1,5 +1,4 @@
 from .config import *
-from score_giver import give_score
 from random import randint
 import time
 import _thread
@@ -216,7 +215,7 @@ class Game:
         })
 
         user = self.field.win.user
-        give_score(user, self.type)
+        user.temp.give_score(user, self.type)
 
         _thread.exit()
 

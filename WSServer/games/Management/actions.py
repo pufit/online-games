@@ -1,4 +1,3 @@
-from score_giver import give_score
 
 
 def check_turn(func):
@@ -35,7 +34,7 @@ def __end_round(self):
         data = {'type': 'game_over', 'data': {player.name: player.n for player in self.game.players.values()}}
         win = max(data['data'], key=lambda x: data['data'][x])
         user = self.temp.users[win]
-        give_score(user, self.game.type)
+        self.temp.give_score(user, self.game.type)
         self.game.channel.send(data)
     data = {'type': 'new_round_started', 'data': ''}
     self.game.channel.send(data)
