@@ -197,10 +197,11 @@ class Game:
         self.slots = config['slots']
         self.channel = channel
 
-        self.last_player_id = -1
         self.started = False
-
         self.players = {}
+
+        self.last_player_id = -1
+
         self.turn = None
         self.deck = []
         self.current_combination = None

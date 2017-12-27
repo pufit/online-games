@@ -1,3 +1,4 @@
+from score_giver import give_score
 
 
 def check_turn(func):
@@ -74,6 +75,5 @@ def not_believe(self, data):
         }
         win = min(self.game.score_table, key=lambda x: self.game.score_table[x])
         user = self.temp.users[win]
-        user.user_stat[user.game.type][0] += 1
-        self.temp.db_save_all()
+        give_score(user, self.game.type)
         self.game.channel.send(resp)

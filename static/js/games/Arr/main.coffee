@@ -90,7 +90,6 @@ class Bullet
     @field.ctx.restore()
 
 
-
 class ArrWS extends WSClient
   auth_ok: (data) ->
     super data
@@ -123,9 +122,6 @@ class ArrWS extends WSClient
     field.update(data.players, data.bullets)
 
 
-
-
-
 winFieldWidth = 400
 winFieldHeight = 400
 winAdditionalWidth = 200
@@ -138,7 +134,6 @@ bulletImage.src = 'static/img/games/Arr/bullet.png'
 window.playerImages = playerImages = [new Image(), new Image()]
 playerImages[0].src = 'static/img/games/Arr/player1.png'
 playerImages[1].src = 'static/img/games/Arr/player2.png'
-
 
 
 field = new Field(document.getElementById('canvas'), fieldWidth, fieldHeight)

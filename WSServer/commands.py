@@ -10,7 +10,8 @@ import sessions
 import games
 from config import *
 from channel import Channel
-from _thread import start_new_thread
+from score_giver import give_score as __score
+from _thread import start_new_thread as __start_new_thread
 
 
 def perms_check(user_rights):
@@ -143,7 +144,8 @@ def games_list(self, data):
         'creator': self.temp.games[i].creator,
         'players': len(self.temp.games[i].players),
         'type': self.temp.games[i].type,
-        'slots': self.temp.games[i].slots
+        'slots': self.temp.games[i].slots,
+        'config': self.temp.games[i].config
     } for i in self.temp.games]
     return {'type': 'ret_game_list', 'data': lst}
 
@@ -246,7 +248,7 @@ def start_game(self, data):
         raise Exception('You are not connected to any game')
     if self.user != self.game.creator:
         raise Exception('You are not creator of this game')
-    start_new_thread(self.game.start_game, tuple())
+    __start_new_thread(self.game.start_game, tuple())
     self.game.channel.send({'type': 'game_started', 'data': ''})
     return {'type': 'game', 'data': ''}
 
@@ -256,8 +258,7 @@ def leave(self, data):
     if not self.game:
         return None
     if self.game.started:
-        self.user_stat[self.game.type][1] += 1
-        self.temp.db_save(USERS, self.temp.users)
+        __score(self, self.game.type, -1)
     else:
         self.temp.main_channel.send({
             'type': 'game_player_left',

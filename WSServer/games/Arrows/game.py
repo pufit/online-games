@@ -1,4 +1,5 @@
 from .config import *
+from score_giver import give_score
 from random import randint
 import time
 import _thread
@@ -215,8 +216,7 @@ class Game:
         })
 
         user = self.field.win.user
-        user.user_stat[self.type][0] += 1
-        user.temp.db_save_all()
+        give_score(user, self.type)
 
         _thread.exit()
 

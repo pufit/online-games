@@ -1,3 +1,5 @@
+from score_giver import give_score
+
 
 def check_turn(func):
     def wrapper(self, data):
@@ -25,9 +27,15 @@ def get_information(self, _):
 
 
 def __end_round(self):
+
+    # TODO: win debug
+
     end = self.game.checkForGameEnd()
     if end:
         data = {'type': 'game_over', 'data': {player.name: player.n for player in self.game.players.values()}}
+        win = max(data['data'], key=lambda x: data['data'][x])
+        user = self.temp.users[win]
+        give_score(user, self.game.type)
         self.game.channel.send(data)
     data = {'type': 'new_round_started', 'data': ''}
     self.game.channel.send(data)
