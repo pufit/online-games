@@ -7,7 +7,7 @@ main_pages = Blueprint('main_pages', __name__, template_folder='templates', stat
 
 @main_pages.route('/')
 def lobby():
-    return render_template('lobby.html')
+    return render_template('base.html')
 
 
 @main_pages.route('/auth', methods=['POST', 'GET'])

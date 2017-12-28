@@ -12,8 +12,6 @@ from _thread import start_new_thread
 import traceback
 
 
-VERSION = None
-
 db = Db()
 
 
