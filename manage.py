@@ -8,8 +8,6 @@ from apps.bnb.views import bnb
 from apps.extinguisher.views import extinguisher
 from apps.management.views import management
 
-from WSServer import server
-
 sys.path.append(os.getcwd() + '\\WSServer\\games')
 sys.path.append(os.getcwd() + '\\WSServer')
 
@@ -26,10 +24,7 @@ app.config.from_object(Configuration)
 
 
 if __name__ == '__main__':
-
-    try:
-        s, l = server.run(app.secret_key)
-    except OSError:
-        pass
+    from WSServer import server
+    server.run(app.secret_key)
 
     app.run(HTTP_IP, port=HTTP_PORT)

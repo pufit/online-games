@@ -2,7 +2,7 @@
 
 class Configuration(object):
     SECRET_KEY = '81824be9f077eac410a9c3e0f28bc4e2'
-    DEBUG = True
+    DEBUG = False
     SESSION_COOKIE_HTTPONLY = False
 
 

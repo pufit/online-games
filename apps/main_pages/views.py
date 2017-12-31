@@ -66,8 +66,3 @@ def user_data(user_id):
 @main_pages.route('/chat/<channel_id>')
 def chat(channel_id):
     return render_template('chat.html', channel_id=channel_id)
-
-
-@main_pages.route('/debug')
-def debug():
-    raise Exception('Debug')
