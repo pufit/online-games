@@ -1,14 +1,14 @@
 from flask import *
 from config import *
-from _thread import start_new_thread
 import sys
 import os
-import traceback
 from apps.main_pages.views import main_pages
 from apps.arrows.views import arrows
 from apps.bnb.views import bnb
 from apps.extinguisher.views import extinguisher
 from apps.management.views import management
+
+from WSServer import server
 
 sys.path.append(os.getcwd() + '\\WSServer\\games')
 sys.path.append(os.getcwd() + '\\WSServer')
@@ -26,22 +26,10 @@ app.config.from_object(Configuration)
 
 
 if __name__ == '__main__':
-    from WSServer import server
 
     try:
-        server.run(app.secret_key)
+        s, l = server.run(app.secret_key)
     except OSError:
         pass
 
-    if app.debug:
-        app.run(HTTP_IP, port=HTTP_PORT)
-    else:
-        start_new_thread(app.run, (IP, PORT))
-
-    while True:
-        try:
-            out = eval(input())
-            if out is not None:
-                print(out)
-        except:
-            traceback.print_exc()
+    app.run(HTTP_IP, port=HTTP_PORT)

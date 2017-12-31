@@ -1,8 +1,9 @@
 from flask import *
+from WSServer import server
 
 arrows = Blueprint('arrows', __name__, template_folder='templates', static_folder='static')
 
 
-@arrows.route('/')
-def game():
-    return render_template('game.html')
+@arrows.route('/<name>')
+def game(name):
+    return render_template('game.html', name=name, test=server.db.handlers)

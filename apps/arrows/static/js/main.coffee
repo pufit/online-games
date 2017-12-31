@@ -2,16 +2,17 @@
 # TODO: Life draw
 
 
-cordToCord = (x, y, k) ->
-  return [x*winFieldWidth // fieldWidth + k, y * winFieldHeight // fieldHeight + k]
-
-window.cordToCord = cordToCord
-
 class Field
-  constructor: (@canvas, @width, @height) ->
+  constructor: (@canvas, @game) ->
+    @width = @game.config.width
+    @height = @game.config.height
+
+    @jqcanvas = $('#canvas')
+    @canvasHeight = @canvasWidth = @canvas.height = @canvas.width = Math.min(@jqcanvas.width() - winAdditionalWidth , @jqcanvas.height())
+    @canvas.width += winAdditionalWidth
+    @jqcanvas.width(@canvas.width)
+    @jqcanvas.height(@canvas.height)
     @ctx = @canvas.getContext('2d')
-    @canvasWidth = @canvas.width = winFieldWidth + winAdditionalWidth
-    @canvasHeight = @canvas.height = winFieldHeight
 
     @dotsColor = "173, 192, 219"
 
@@ -19,11 +20,11 @@ class Field
     @bullets = []
 
   drawDots: ->
-    for i in [0...fieldWidth]
-      for j in [0...fieldHeight]
+    for i in [0...@width]
+      for j in [0...@height]
 
-        x = winFieldWidth//@width//2 + i*winFieldWidth//@width
-        y = winFieldHeight//@height//2 + j*winFieldHeight//@height
+        x = @canvasWidth//@width//2 + i*@canvasWidth//@width
+        y = @canvasHeight//@height//2 + j*@canvasHeight//@height
 
         @ctx.beginPath()
         @ctx.arc(x, y, 1, 0, 2*Math.PI)
@@ -52,6 +53,9 @@ class Field
     player.draw() for player in @players
     bullet.draw() for bullet in @bullets
 
+  cordToCord: (x, y, k) ->
+    return [x*@canvasHeight // @width + k, y * @canvasHeight // @height + k]
+
 
 class Player
   constructor: (@x, @y, @id, @field, @user) ->
@@ -59,14 +63,14 @@ class Player
 
     @direction = 0
 
-    @width = winFieldWidth // fieldWidth - 2
-    @height = winFieldHeight // fieldHeight - 2
+    @width = @field.canvasWidth // @field.width - 2
+    @height = @field.canvasHeight // @field.height - 2
 
 
-    [@real_x, @real_y] = cordToCord(@x, @y, 2)
+    [@real_x, @real_y] = @field.cordToCord(@x, @y, 2)
 
   draw: ->
-    [@real_x, @real_y] = cordToCord(@x, @y, 2)
+    [@real_x, @real_y] = @field.cordToCord(@x, @y, 2)
     @field.ctx.save()
     @field.ctx.translate(@real_x + @width / 2, @real_y + @height / 2)
     @field.ctx.rotate(@direction * 90 * Math.PI/180)
@@ -76,13 +80,13 @@ class Player
 
 class Bullet
   constructor: (@x, @y, @direction, @field) ->
-    [@real_x, @real_y] = cordToCord(@x, @y, 3)
+    [@real_x, @real_y] = @field.cordToCord(@x, @y, 3)
 
-    @width = winFieldWidth // fieldWidth - 8
-    @height = winFieldHeight // fieldHeight - 8
+    @width = @field.canvasWidth // @field.width - 8
+    @height = @field.canvasHeight // @field.height - 8
 
   draw: ->
-    [@real_x, @real_y] = cordToCord(@x, @y, 2)
+    [@real_x, @real_y] = @field.cordToCord(@x, @y, 2)
     @field.ctx.save()
     @field.ctx.translate(@real_x + @width / 2, @real_y + @height / 2)
     @field.ctx.rotate(@direction * 90 * Math.PI/180)
@@ -93,13 +97,14 @@ class Bullet
 class ArrWS extends WSClient
   auth_ok: (data) ->
     super data
-    @send('join', 'test')
+    @send('join', gameName)
 
   do_action: (data) ->
     @send('action', {'action_type': 'do_action', 'direction': data})
 
   success_join: (data) ->
     super data
+    window.field = field = new Field(document.getElementById('canvas'), data.game)
     for player in Object.values(data.players)
       field.addNewPlayer(player.id, player.player_information)
     $(document).keydown (event) =>
@@ -122,21 +127,13 @@ class ArrWS extends WSClient
     field.update(data.players, data.bullets)
 
 
-winFieldWidth = 400
-winFieldHeight = 400
 winAdditionalWidth = 200
-fieldWidth = 20
-fieldHeight = 20
 
 bulletImage = new Image()
-bulletImage.src = 'static/img/games/Arr/bullet.png'
+bulletImage.src = 'static/img/bullet.png'
 
 window.playerImages = playerImages = [new Image(), new Image()]
-playerImages[0].src = 'static/img/games/Arr/player1.png'
-playerImages[1].src = 'static/img/games/Arr/player2.png'
-
-
-field = new Field(document.getElementById('canvas'), fieldWidth, fieldHeight)
-window.field = field
+playerImages[0].src = 'static/img/player1.png'
+playerImages[1].src = 'static/img/player2.png'
 
 window.ArrWS = ArrWS = new ArrWS()

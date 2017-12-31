@@ -1,17 +1,13 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    {% block head %}
-    <meta charset="UTF-8">
-    <link href="" rel="stylesheet">
-    <script>
-        var channel_id = {{ channel_id }};
-    </script>
-    {% endblock %}
-</head>
-<body>
 
-{% block chat %}
+
+<link href="{{ url_for('.static', filename='css/chat.css') }}" rel="stylesheet">
+<script>
+    var channel_id = {{ channel_id }};
+</script>
+
+
+
+
 <div class="chat-main">
     <div class="help-block">
     </div>
@@ -21,7 +17,9 @@
         <div class="scrollable">
             <div class="scrollbar"></div>
             <div class="scroll-content">
+                <div class="chat-message">
 
+                </div>
             </div>
         </div>
     </div>
@@ -39,11 +37,6 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block footer %}
+
 <script src=""></script>
-{% endblock %}
-
-</body>
-</html>

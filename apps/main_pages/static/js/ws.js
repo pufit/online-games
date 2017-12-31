@@ -60,14 +60,16 @@
     WSClient.prototype.success_join = function(data) {
       this.game = {
         'me': {},
-        'players': []
+        'players': {},
+        'game': {}
       };
       this.game.me.id = data.id;
-      return this.game.players = data.players;
+      this.game.players = data.players;
+      return this.game.game = data.game;
     };
 
     WSClient.prototype.new_player_connected = function(data) {
-      return this.game.players.push(data);
+      return this.game.players[data.name] = data;
     };
 
     WSClient.prototype.user_disconnected = function(data) {

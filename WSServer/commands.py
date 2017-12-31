@@ -115,7 +115,11 @@ def reg(self, data):
 
     :return: __auth(self, data['user'], auth_type='reg_ok')
     """
-    if data["user"] not in self.temp.users:
+    if len(data['user']) < 3:
+        raise Exception('Too small name')
+    if len(data['password']) == 0:
+        raise Exception('Bad password')
+    if data['user'] not in self.temp.users:
         user_id = [self.temp.users[i]['user_id'] for i in self.temp.users]
         self.user_id = max(user_id) + 1
         self.temp.users[data["user"]] = {
@@ -163,7 +167,7 @@ def create_game(self, data):
     :raise: This game already exist
             Bad slots
             Bad name
-            game.__init__ exceptions
+            other game.__init__ exceptions
 
     :return: dict
     """
@@ -179,10 +183,12 @@ def create_game(self, data):
     resp = {
         'type': 'game_created',
         'data': {
-            'name': data['name'],
+            'name': game.name,
+            'creator': game.creator,
             'players': 0,
-            'type': data['type'],
-            'slots': data['slots']
+            'type': game.type,
+            'slots': game.slots,
+            'config': game.config
         }
     }
     self.temp.main_channel.send(resp)
@@ -228,6 +234,13 @@ def join(self, data):
         'type': 'success_join',
         'data': {
             'id': self.me.id,
+            'game': {
+                'name': self.game.name,
+                'creator': self.game.creator,
+                'type': self.game.type,
+                'slots': self.game.slots,
+                'config': self.game.config,
+            },
             'players': {
                 self.game.players[player].name:
                     {
@@ -247,6 +260,8 @@ def start_game(self, data):
         raise Exception('You are not connected to any game')
     if self.user != self.game.creator:
         raise Exception('You are not creator of this game')
+    if len(self.game.players) == 1:
+        raise Exception('You need one more player')
     __start_new_thread(self.game.start_game, tuple())
     self.game.channel.send({'type': 'game_started', 'data': ''})
     return {'type': 'game', 'data': ''}
@@ -255,7 +270,7 @@ def start_game(self, data):
 @perms_check(0)
 def leave(self, data):
     if not self.game:
-        return None
+        return {'type': 'leave_error', 'data': 'You are not connected to any game'}
     if self.game.started:
         self.temp.give_score(self, self.game.type, -1)
     else:

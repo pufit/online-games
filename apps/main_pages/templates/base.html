@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ url_for('.static', filename='css/main.css') }}">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Лобби</title>
+        <link rel="stylesheet" href="{{ url_for('.static', filename='css/main.css') }}">
 </head>
 <body>
-
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a href="#" class="navbar-brand"> 3 </a>
+        <a href="/" class="navbar-brand"> Online-games </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse"
                 data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -20,38 +18,42 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Test1</a>
+                    <a href="#" class="nav-link">Рейтинг</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Test2</a>
+                    <a href="#" class="nav-link">Информация</a>
                 </li>
-                <li class="nav-item ">
-                    <a href="#" class="nav-link">Test3</a>
+            </ul>
+            <ul class="navbar-nav mr-6">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="{{ url_for('.static', filename='img/Admin.jpg') }}">
+                        User
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="#">Личный кабинет</a>
+                        <a class="dropdown-item" href="#">Выйти</a>
+                    </div>
                 </li>
             </ul>
         </div>
 
     </nav>
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6 col-md-8">
-                wad wd dw adw adw adawdawda w daw dawad wd dw adw adw adawdawda w daw da
-                wad wd dw adw adw adawdawda w daw dawad wd dw adw adw adawdawda w daw da
-                wad wd dw adw adw adawdawda w daw dawad wd dw adw adw adawdawda w daw da
-                wad wd dw adw adw adawdawda w daw dawad wd dw adw adw adawdawda w daw da
             </div>
             <div class="col-sm-6 col-md-4">
-                wad wd dw adw adw adawdawda w daw dawad wd dw adw adw adawdawda w daw da
-                wad wd dw adw adw adawdawda w daw dawad wd dw adw adw adawdawda w daw da
-                wad wd dw adw adw adawdawda w daw dawad wd dw adw adw adawdawda w daw da
-                wad wd dw adw adw adawdawda w daw dawad wd dw adw adw adawdawda w daw da
+                {% include 'chat.html' %}
             </div>
         </div>
     </div>
 
+
     <script src="{{ url_for('.static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('.static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('.static', filename='js/bootstrap.js') }}"></script>
+
 </body>
 </html>

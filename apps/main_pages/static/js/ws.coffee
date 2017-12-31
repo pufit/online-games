@@ -36,13 +36,15 @@ class WSClient
   success_join: (data) ->
     @game = {
       'me': {}
-      'players': []
+      'players': {},
+      'game': {}
     }
     @game.me.id = data.id
     @game.players = data.players
+    @game.game = data.game
 
   new_player_connected: (data) ->
-    @game.players.push(data)
+    @game.players[data.name] = data
 
   user_disconnected: (data) ->
     if data.user

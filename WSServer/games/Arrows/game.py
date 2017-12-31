@@ -129,7 +129,8 @@ class Field:
                         if self.alive_players_count == 1:
                             player.score += 1
                             if player.score == self.max_score:
-                                self.win = min(self.players.values(), key=lambda x: x['score']).name
+                                win = min(self.players.values(), key=lambda x: x.score).name
+                                self.win = player.temp.users[win]
                             self.restart()
                             break
 
@@ -250,5 +251,9 @@ class Game:
         }, log=False)
 
     def leave(self, player_id):
+        # TODO: leave debug
         player = self.field.players.pop(player_id)
         self.channel.send({'type': 'player_left', 'data': player.name})
+        if not len(self.field.players):
+            self.field.win = list(self.field.players.values())[0].name
+            self.stop = True
