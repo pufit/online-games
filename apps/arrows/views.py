@@ -6,4 +6,6 @@ arrows = Blueprint('arrows', __name__, template_folder='templates', static_folde
 
 @arrows.route('/<name>')
 def game(name):
+    if name not in server.db.games:
+        abort(404)
     return render_template('game.html', name=name, test=server.db.handlers)

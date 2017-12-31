@@ -4,6 +4,7 @@ class Configuration(object):
     SECRET_KEY = '81824be9f077eac410a9c3e0f28bc4e2'
     DEBUG = False
     SESSION_COOKIE_HTTPONLY = False
+    TEMPLATES_AUTO_RELOAD = True
 
 
 VERSION = '2.0b'

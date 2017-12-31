@@ -58,3 +58,9 @@
     content: attr(placeholder);
     color: #565a64;
 }
+.scroll-content {
+    padding: 10px;
+}
+.chat-message span {
+    color: rgba(255, 255, 255, 0.5)
+}

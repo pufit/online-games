@@ -3,7 +3,7 @@
 .bg-dark {
     background-color: #0b2e13 !important;
 }
-.row {
+.main-row {
     height: 93vh
 }
 .mr-6 {
@@ -24,7 +24,26 @@
     color: #c161e5 !important;
     -webkit-animation: hue 10s infinite linear;
 }
-
+.main-block {
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: calc(100% - 20px) !important;
+}
+.bg-green {
+    background-color: #00160A;
+}
+.game {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    height: 150px;
+}
+.game a {
+    display: block;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
 @-webkit-keyframes hue {
     from {
         -webkit-filter: hue-rotate(0deg);
