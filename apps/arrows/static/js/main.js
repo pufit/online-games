@@ -77,7 +77,9 @@
       ref = this.players;
       for (l = 0, len = ref.length; l < len; l++) {
         player = ref[l];
-        player.draw();
+        if (player.life) {
+          player.draw();
+        }
       }
       ref1 = this.bullets;
       results = [];
@@ -219,11 +221,15 @@
 
   bulletImage.src = 'static/img/bullet.png';
 
-  window.playerImages = playerImages = [new Image(), new Image()];
+  window.playerImages = playerImages = [new Image(), new Image(), new Image(), new Image()];
 
   playerImages[0].src = 'static/img/player1.png';
 
   playerImages[1].src = 'static/img/player2.png';
+
+  playerImages[2].src = 'static/img/player3.png';
+
+  playerImages[3].src = 'static/img/player4.png';
 
   window.ArrWS = ArrWS = new ArrWS();
 

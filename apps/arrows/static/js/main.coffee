@@ -50,7 +50,7 @@ class Field
     @ctx.clearRect(0, 0, @canvasWidth, @canvasHeight)
     @ctx.globalAlpha = 1
     @drawDots()
-    player.draw() for player in @players
+    player.draw() for player in @players when player.life
     bullet.draw() for bullet in @bullets
 
   cordToCord: (x, y, k) ->
@@ -132,8 +132,10 @@ winAdditionalWidth = 200
 bulletImage = new Image()
 bulletImage.src = 'static/img/bullet.png'
 
-window.playerImages = playerImages = [new Image(), new Image()]
+window.playerImages = playerImages = [new Image(), new Image(), new Image(), new Image()]
 playerImages[0].src = 'static/img/player1.png'
 playerImages[1].src = 'static/img/player2.png'
+playerImages[2].src = 'static/img/player3.png'
+playerImages[3].src = 'static/img/player4.png'
 
 window.ArrWS = ArrWS = new ArrWS()

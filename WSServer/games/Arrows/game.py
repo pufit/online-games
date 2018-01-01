@@ -200,6 +200,9 @@ class Game:
         """
         Начинаем игру
         :return: None
+
+        self.field.win - class Player
+
         """
         self.started = True
         self.field.restart()
@@ -251,9 +254,8 @@ class Game:
         }, log=False)
 
     def leave(self, player_id):
-        # TODO: leave debug
         player = self.field.players.pop(player_id)
         self.channel.send({'type': 'player_left', 'data': player.name})
-        if not len(self.field.players):
-            self.field.win = list(self.field.players.values())[0].name
+        if (len(self.field.players) == 1) and self.started:
+            self.field.win = list(self.field.players.values())[0]
             self.stop = True

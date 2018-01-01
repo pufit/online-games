@@ -7,15 +7,15 @@
         <link rel="stylesheet" href="{{ url_for('.static', filename='css/main.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="mainNav" style="height: 7vh !important">
         <a href="/" class="navbar-brand"> Online-games </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse"
-                data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
-                aria-expanded="false" aria-label="Toggle navigation">
+                data-target="#navbarsDefault" aria-controls="navbarsDefault"
+                aria-expanded="false" aria-label="Toggle navigation" id="menuButton">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <div class="collapse navbar-collapse" id="navbarsDefault">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a href="#" class="nav-link">Рейтинг</a>
@@ -40,9 +40,18 @@
 
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
+    <div class="container-fluid bg-green">
+        <div class="row main-row">
             <div class="col-sm-6 col-md-8">
+                <div class="container h-100 main-block">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4 game">
+                            <span class="name">Test</span>
+                            <a class="btn btn-primary btn-lg" href="#" role="button">Войти »</a>
+                        </div>
+
+                    </div>
+                </div>
             </div>
             <div class="col-sm-6 col-md-4">
                 {% include 'chat.html' %}
@@ -52,6 +61,7 @@
 
 
     <script src="{{ url_for('.static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('.static', filename='js/lobby.js') }}"></script>
     <script src="{{ url_for('.static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('.static', filename='js/bootstrap.js') }}"></script>
 
