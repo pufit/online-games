@@ -47,15 +47,16 @@ class Factory:
 
 
 class Game:
-    def __init__(self, name, channel, creator, slots, _):
+    def __init__(self, channel, creator, config):
         
         self.MAX_PLAYERS = MAX_PLAYERS
         self.type = 'Man'
 
-        self.name = name
+        self.name = config['name']
         self.channel = channel
         self.creator = creator
-        self.slots = slots
+        self.slots = config['slots']
+        self.config = config
 
         self.gameLevel = 1
         self.gameLevelUpdateTable = [
@@ -64,7 +65,7 @@ class Game:
             [1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5],  # [1, 3, 4, 3, 1]
             [1, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5],  # [1, 1, 3, 4, 3]
             [1, 2, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5]  # [1, 1, 2, 4, 4]
-        ]  # Кирилл, 16 годиков, ходит на 3-е чаепитие подряд
+        ]  # Кирилл, 17 годиков, ходит на 3-е чаепитие подряд
         self.players = {}
         self.playersAlive = 0
         self.playersEndedRound = 0
