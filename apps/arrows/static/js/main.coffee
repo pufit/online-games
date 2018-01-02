@@ -37,7 +37,7 @@ class Field
     return player
 
   update: (players, bullets) ->
-    for player in players when player.life
+    for player in players
       up_player = @players[player.id]
       for par of player
         up_player[par] = player[par]
@@ -122,6 +122,14 @@ class ArrWS extends WSClient
   new_player_connected: (data) ->
     super data
     field.addNewPlayer(data.id, data.player_information)
+
+  player_left: (data) ->
+    # TODO: player_left debug
+    console.log('player_left')
+    for player in field.players
+      if player.user.user == data
+        field.players.splice(field.players.indexOf(player), 1)
+        break
 
   tick_passed: (data) ->
     field.update(data.players, data.bullets)

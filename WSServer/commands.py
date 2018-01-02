@@ -10,7 +10,7 @@ import sessions
 import games
 from config import *
 from channel import Channel
-from _thread import start_new_thread as __start_new_thread
+from server import Thread
 
 
 def perms_check(user_rights):
@@ -262,7 +262,7 @@ def start_game(self, data):
         raise Exception('You are not creator of this game')
     if len(self.game.players) == 1:
         raise Exception('You need one more player')
-    __start_new_thread(self.game.start_game, tuple())
+    Thread(self.game.start_game)
     self.game.channel.send({'type': 'game_started', 'data': ''})
     return {'type': 'game', 'data': ''}
 

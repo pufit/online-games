@@ -8,11 +8,12 @@ from config import *
 from db import Db
 import logging
 import asyncio
-from _thread import start_new_thread
+import threading
 import traceback
 
 
-db = Db()
+lock = threading.Lock()
+db = Db(lock)
 
 
 class Handler(WebSocketServerProtocol):
@@ -65,7 +66,7 @@ class Handler(WebSocketServerProtocol):
             data = 'Error'
         try:
             message_type = message_type.replace('__', '')
-
+            message_type = message_type.lower()
             self.logger.info('%s Запрос %s  %s' % (self.addr, message_type, data))
             resp = commands.__getattribute__(message_type)(self, data)
         except Exception as ex:
@@ -80,6 +81,12 @@ class Handler(WebSocketServerProtocol):
             self.channel.leave(self)
         self.temp.handlers.remove(self)
         self.logger.info('%s Отключился' % (self.addr,))
+
+
+class Thread(threading.Thread):
+    def __init__(self, t, *args):
+        threading.Thread.__init__(self, target=t, args=args)
+        self.start()
 
 
 def run(secret_key):
@@ -101,13 +108,13 @@ def run(secret_key):
     coro = l.create_server(factory, IP, PORT)
     s = l.run_until_complete(coro)
 
-    start_new_thread(l.run_forever, tuple())
-    return s, l
+    thread = Thread(l.run_forever)
+    return thread
 
 
 if __name__ == '__main__':
     sk = 'shouldintermittentvengeancearmagainhisredrighthandtoplagueus'
-    server, loop = run(sk)
+    run(sk)
     while True:
         try:
             out = eval(input())

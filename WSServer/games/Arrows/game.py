@@ -1,7 +1,6 @@
 from .config import *
 from random import randint
 import time
-import _thread
 
 
 class Player:
@@ -111,10 +110,10 @@ class Field:
         for player in self.players.values():
             if not player.life:
                 continue
+            player.update()
             if player.shooting:
                 self.player_shoot(player)
                 player.shooting = False
-            player.update()
             player.speed_x = 0
             player.speed_y = 0
         for bullet in self.bullets:
@@ -130,7 +129,7 @@ class Field:
                             player.score += 1
                             if player.score == self.max_score:
                                 win = min(self.players.values(), key=lambda x: x.score).name
-                                self.win = player.temp.users[win]
+                                self.win = player.user.temp.users[win]
                             self.restart()
                             break
 
@@ -201,7 +200,7 @@ class Game:
         Начинаем игру
         :return: None
 
-        self.field.win - class Player
+        self.field.win: class Player
 
         """
         self.started = True
@@ -220,8 +219,6 @@ class Game:
 
         user = self.field.win.user
         user.temp.give_score(user, self.type)
-
-        _thread.exit()
 
     def tick(self):
         """
@@ -256,6 +253,7 @@ class Game:
     def leave(self, player_id):
         player = self.field.players.pop(player_id)
         self.channel.send({'type': 'player_left', 'data': player.name})
+        self.field.alive_players_count -= 1
         if (len(self.field.players) == 1) and self.started:
             self.field.win = list(self.field.players.values())[0]
             self.stop = True

@@ -53,9 +53,6 @@
       var bullet, l, len, len1, m, par, player, up_player;
       for (l = 0, len = players.length; l < len; l++) {
         player = players[l];
-        if (!player.life) {
-          continue;
-        }
         up_player = this.players[player.id];
         for (par in player) {
           up_player[par] = player[par];
@@ -205,6 +202,23 @@
     ArrWS.prototype.new_player_connected = function(data) {
       ArrWS.__super__.new_player_connected.call(this, data);
       return field.addNewPlayer(data.id, data.player_information);
+    };
+
+    ArrWS.prototype.player_left = function(data) {
+      var l, len, player, ref, results;
+      console.log('player_left');
+      ref = field.players;
+      results = [];
+      for (l = 0, len = ref.length; l < len; l++) {
+        player = ref[l];
+        if (player.user.user === data) {
+          field.players.splice(field.players.indexOf(player), 1);
+          break;
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
     };
 
     ArrWS.prototype.tick_passed = function(data) {
