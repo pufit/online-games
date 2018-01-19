@@ -74,4 +74,3 @@ def not_believe(self, data):
         user = self.temp.users[win]
         self.temp.give_score(user, self.game.type)
         self.game.channel.send(resp)
-

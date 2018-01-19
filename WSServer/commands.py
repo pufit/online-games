@@ -135,11 +135,8 @@ def reg(self, data):
 
 
 @perms_check(0)
-def games_list(self, data):
+def games_list(self, _):
     """
-    :param self: class Handler
-    :param data: None
-
     :return: list
     """
     lst = [{
@@ -255,7 +252,7 @@ def join(self, data):
 
 
 @perms_check(1)
-def start_game(self, data):
+def start_game(self, _):
     if not self.game:
         raise Exception('You are not connected to any game')
     if self.user != self.game.creator:
@@ -268,7 +265,7 @@ def start_game(self, data):
 
 
 @perms_check(0)
-def leave(self, data):
+def leave(self, _):
     if not self.game:
         return {'type': 'leave_error', 'data': 'You are not connected to any game'}
     if self.game.started:
@@ -301,7 +298,7 @@ def action(self, data):
 
 
 @perms_check(1)
-def start_typing(self, data):
+def start_typing(self, _):
     if self.typing:
         raise Exception('You are already typing')
     self.typing = True
@@ -310,7 +307,7 @@ def start_typing(self, data):
 
 
 @perms_check(1)
-def stop_typing(self, data):
+def stop_typing(self, _):
     if not self.typing:
         raise Exception('You are not typing')
     self.typing = False
@@ -341,7 +338,7 @@ def send_message(self, data):
 
 
 @perms_check(0)
-def get_channel_information(self, data):
+def get_channel_information(self, _):
     if self.channel:
         users = {}
         user_count = 0
@@ -362,10 +359,8 @@ def get_channel_information(self, data):
 
 
 @perms_check(0)
-def ping(self, data):
+def ping(_, data):
     """
-    :param self: None
-    :param data: send time or None
     :return: dict
     """
     if not data:
@@ -373,12 +368,9 @@ def ping(self, data):
     return {'type': 'pong', 'data': time.time() - data}
 
 
-def error(self, data):
+def error(*_):
     """
     System method
-    :param self: None
-    :param data: None
     :return: dict
     """
     return {'type': 'error', 'data': 'Bad request'}
-
