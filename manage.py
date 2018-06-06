@@ -8,8 +8,8 @@ from apps.bnb.views import bnb
 from apps.extinguisher.views import extinguisher
 from apps.management.views import management
 
-sys.path.append(os.getcwd() + '\\WSServer\\games\\')
-sys.path.append(os.getcwd() + '\\WSServer\\')
+sys.path.append(os.getcwd() + '\\WSServer\\games')
+sys.path.append(os.getcwd() + '\\WSServer')
 
 
 app = Flask(__name__, static_folder=None, template_folder=None)

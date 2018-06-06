@@ -61,26 +61,26 @@ class Handler(WebSocketServerProtocol):
             message = json.loads(payload.decode('utf-8'))
             message_type = message['type']
             data = message['data']
-        except:
+        except (json.decoder.JSONDecodeError, UnicodeDecodeError):
             message_type = 'error'
             data = 'Error'
         try:
             message_type = message_type.replace('__', '')
             message_type = message_type.lower()
-            self.logger.info('%s Запрос %s  %s' % (self.addr, message_type, data))
-            resp = commands.__getattribute__(message_type)(self, data)
+            self.logger.info('%s Request %s  %s' % (self.addr, message_type, data))
+            resp = getattr(commands, message_type)(self, data)
         except Exception as ex:
             resp = {'type': message_type + '_error', 'data': str(ex)}
-            self.logger.error('%s Ошибка %s  %s' % (self.addr, message_type, str(ex)))
+            self.logger.error('%s Error %s  %s' % (self.addr, message_type, str(ex)))
         self.ws_send(json.dumps(resp))
-        self.logger.info('%s Ответ  %s  %s' % (self.addr, resp['type'], resp['data']))
+        self.logger.info('%s Response  %s  %s' % (self.addr, resp['type'], resp['data']))
 
     def onClose(self, *args):
         commands.leave(self, None)
         if self.channel:
             self.channel.leave(self)
         self.temp.handlers.remove(self)
-        self.logger.info('%s Отключился' % (self.addr,))
+        self.logger.info('%s Disconnected' % (self.addr,))
 
 
 class Thread(threading.Thread):
@@ -98,17 +98,17 @@ def run(secret_key):
     log_handler.setFormatter(logging.Formatter(form))
 
     logger.addHandler(log_handler)
-    logger.info('Запуск сервера %s:%s' % (IP, PORT))
+    logger.info('Start %s:%s' % (IP, PORT))
 
     Handler.secret_key = secret_key
     factory = WebSocketServerFactory(u"ws://%s:%s" % (IP, PORT))
     factory.protocol = Handler
 
-    l = asyncio.get_event_loop()
-    coro = l.create_server(factory, IP, PORT)
-    s = l.run_until_complete(coro)
+    loop = asyncio.get_event_loop()
+    coro = loop.create_server(factory, IP, PORT)
+    loop.run_until_complete(coro)
 
-    thread = Thread(l.run_forever)
+    thread = Thread(loop.run_forever)
     return thread
 
 
